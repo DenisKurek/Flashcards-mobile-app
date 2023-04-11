@@ -10,8 +10,11 @@ import java.util.Optional;
 @Service
 public class FlashcardService {
 
-    @Autowired
-    private FlashcardRepository flashcardRepository;
+    private final FlashcardRepository flashcardRepository;
+
+    public FlashcardService(FlashcardRepository flashcardRepository) {
+        this.flashcardRepository = flashcardRepository;
+    }
 
     public List<Flashcard> allFlashcards(){
         return flashcardRepository.findAll();
