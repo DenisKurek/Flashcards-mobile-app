@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { View, TextInput, Button, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { AuthContext } from "../store/AuthenticationContext";
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const { state, login, logout } = useContext(AuthContext);
   const navigation = useNavigation();
 
   const handleEmailChange = (text) => {
@@ -17,7 +18,15 @@ const LoginScreen = () => {
   };
 
   const handleLoginPress = () => {
-    navigation.navigate("UserMenu");
+    login({ email, password })
+      .then(() => {
+        navigation.navigate("UserMenu");
+      })
+      .catch((error) => {
+        console.log(error);
+        //TODO
+        //add errorhanling visualization
+      });
   };
 
   return (

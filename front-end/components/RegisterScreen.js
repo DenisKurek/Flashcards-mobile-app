@@ -1,16 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { View, TextInput, Button, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-
+import { AuthContext } from "../store/AuthenticationContext";
+import axios from "axios";
 const RegisterScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigation = useNavigation();
+  const { state, login, logout } = useContext(AuthContext);
 
-  const handleRegister = () => {
-    // handle registration logic here
-    // if registration is successful, navigate to GuestMenu
-    navigation.navigate("GuestMenu");
+  const handleRegister = async () => {
+    try {
+      const response = await axios.post(state.API_URL + "/users/register", {
+        emailAddress: email,
+        password: password,
+      });
+      console.log(response.data);
+      navigation.navigate("GuestMenu");
+    } catch (error) {
+      console.log(error);
+      //TODO
+      //handle error visualization
+    }
   };
 
   return (
