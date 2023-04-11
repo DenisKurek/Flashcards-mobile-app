@@ -1,4 +1,4 @@
 package com.ans.backend.user;
 
-public record SignInRequest(String emailAddress,String username, String password) {
+public record SignInRequest(String emailAddress, String password) {
 }

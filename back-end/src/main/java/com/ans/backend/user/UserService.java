@@ -2,7 +2,6 @@ package com.ans.backend.user;
 
 import org.springframework.stereotype.Service;
 
-import java.util.Locale;
 import java.util.Optional;
 @Service
 public class UserService {
@@ -14,7 +13,7 @@ public class UserService {
     }
 
     public Optional<User> singleUser(String emailAddress){
-        return userRepository.findUserByEmailAddress(emailAddress.toLowerCase(Locale.ROOT));
+        return userRepository.findUserByEmailAddressIgnoreCase(emailAddress);
     }
 
     public void saveUser(User user) {

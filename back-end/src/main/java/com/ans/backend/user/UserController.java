@@ -1,6 +1,6 @@
 package com.ans.backend.user;
 
-import com.mongodb.DuplicateKeyException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +19,12 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<Optional<User>> getUser(@RequestBody LoginRequest loginRequest) {
-        Optional<User> user = userService.singleUser(loginRequest.emailAddress());
 
+        Optional<User> user = userService.singleUser(loginRequest.emailAddress());
+        user.ifPresentOrElse(
+                (x)-> System.out.println(x.getPassword() +" "+ loginRequest.password()),
+                ()-> System.out.println(loginRequest.emailAddress()+" ni ma")
+        );
         if (user.isPresent() && user.get().getPassword().equals(loginRequest.password())) {
             return ResponseEntity.
                     status(HttpStatus.OK)
@@ -32,10 +36,10 @@ public class UserController {
         }
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<Optional<User>> addUserUser(@RequestBody SignInRequest request) {
+    @PostMapping("/register")
+    public ResponseEntity<Optional<User>> addUser(@RequestBody SignInRequest request) {
         try {
-            User newUser = new User(request.emailAddress(), request.username(), request.password());
+            User newUser = new User(request.emailAddress(), request.password());
             userService.saveUser(newUser);
             return ResponseEntity
                     .status(HttpStatus.OK)
