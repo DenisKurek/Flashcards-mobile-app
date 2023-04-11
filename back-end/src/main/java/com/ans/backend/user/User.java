@@ -1,12 +1,15 @@
 package com.ans.backend.user;
 
-import com.ans.backend.flashcard.Flashcard;
 import com.ans.backend.set.FlashcardsSet;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
@@ -19,9 +22,21 @@ import java.util.List;
 public class User {
         @Id
         private ObjectId id;
-        private String username;
+        @NotBlank()
+        @Email(message = "invalid email address")
+        @Indexed(unique = true)
         private String emailAddress;
+
+        @NotBlank
+        @Size(min = 4, max = 14)
+        private String password;
 
         @DocumentReference
         private List<FlashcardsSet> setsIds;
+
+        public User(String emailAddress, String password) {
+                this.emailAddress = emailAddress;
+                this.password = password;
+        }
+
 }
