@@ -1,21 +1,31 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { View, Text, FlatList, TouchableOpacity } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AuthContext } from "../store/AuthenticationContext";
 import { StyleSheet } from "react-native";
+import { API_URL } from "../store/Config";
+import axios from "axios";
 
 const FlashcardsScreen = ({ navigation }) => {
   const [flashcardSets, setFlashcardSets] = useState([]);
+  const ctx = useContext(AuthContext);
 
   useEffect(() => {
     const fetchFlashcardSets = async () => {
       try {
-        const keys = await AsyncStorage.getAllKeys();
-        const allSets = await AsyncStorage.multiGet(keys);
-        const sets = allSets.map((set) => {
-          return { setName: set[0], flashcards: JSON.parse(set[1]) };
+        const response = await axios.get(
+          `${API_URL}/users/${ctx.state.user.emailAddress}/sets`
+        );
+        const data = response.data;
+        const sets = data.map((set) => {
+          return {
+            id: set.id,
+            name: set.title,
+            flashcards: set.flashcardsIds,
+          };
         });
         setFlashcardSets(sets);
       } catch (error) {
+        //TODO add errorchandling
         console.error(error);
       }
     };
@@ -26,10 +36,13 @@ const FlashcardsScreen = ({ navigation }) => {
     <TouchableOpacity
       style={styles.flashcardSet}
       onPress={() =>
-        navigation.navigate("FlashcardScreen", { setName: item.setName })
+        navigation.navigate("FlashcardScreen", {
+          setId: item.id,
+          setName: item.name,
+        })
       }
     >
-      <Text style={styles.setName}>{item.setName}</Text>
+      <Text style={styles.setName}>{item.name}</Text>
       <Text style={styles.setLength}>
         {item.flashcards ? item.flashcards.length : 0} fiszek
       </Text>

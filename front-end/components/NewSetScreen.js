@@ -1,10 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { View, TextInput, Button, StyleSheet } from "react-native";
+import axios from "axios";
+import { AuthContext } from "../store/AuthenticationContext";
+import { API_URL } from "../store/Config";
 
 function NewSetScreen({ navigation }) {
   const [setName, setSetName] = useState("");
+  const ctx = useContext(AuthContext);
 
-  const handleSetName = () => {
+  const handleSetName = async () => {
+    const response = await axios.post(API_URL + "/sets/add", {
+      title: setName,
+      user: ctx.state.user.emailAddress,
+    });
     navigation.navigate("AddFlashcardScreen", { setName });
   };
 
