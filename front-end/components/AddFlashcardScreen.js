@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import { StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { API_URL } from "../store/Config";
+import axios from "axios";
 
 const AddFlashcardScreen = ({ navigation, route }) => {
   const { setName } = route.params;
   const [english, setEnglish] = useState("");
   const [polish, setPolish] = useState("");
-  const [flashcards, setFlashcards] = useState([]);
 
   const handleSaveFlashcards = async () => {
     try {
@@ -20,9 +21,13 @@ const AddFlashcardScreen = ({ navigation, route }) => {
     }
   };
 
-  const handleAddFlashcard = () => {
-    const newFlashcards = [...flashcards, { english, polish }];
-    setFlashcards(newFlashcards);
+  const handleAddFlashcard = async () => {
+    const response = await axios.post(API_URL + "/flashcards/add", {
+      concept: english,
+      definition: polish,
+      set: setName,
+    });
+    console.log(response);
     setEnglish("");
     setPolish("");
   };

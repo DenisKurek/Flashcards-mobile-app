@@ -3,9 +3,11 @@ import { View, Text, TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import axios from "axios";
+import { API_URL } from "../store/Config";
 
 const FlashcardScreen = ({ route }) => {
-  const { setName } = route.params;
+  const { setName, setId } = route.params;
   const [flashcards, setFlashcards] = useState([]);
   const [currentFlashcardIndex, setCurrentFlashcardIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
@@ -17,12 +19,13 @@ const FlashcardScreen = ({ route }) => {
   useEffect(() => {
     const fetchFlashcards = async () => {
       try {
-        const flashcardsJSON = await AsyncStorage.getItem(setName);
-        if (flashcardsJSON != null) {
-          setFlashcards(JSON.parse(flashcardsJSON));
-          setCurrentFlashcardIndex(0);
-        }
+        const response = await axios.get(`${API_URL}/sets/${setId}/flashcards`);
+        const data = response.data;
+        console.log(data);
+        setFlashcards(data);
+        setCurrentFlashcardIndex(0);
       } catch (error) {
+        //TODO add errorchandling
         console.error(error);
       } finally {
         setIsLoading(false);
@@ -75,7 +78,9 @@ const FlashcardScreen = ({ route }) => {
     return null;
   }
 
-  const currentFlashcard = flashcards[currentFlashcardIndex];
+  const { concept: polish, definition: english } =
+    flashcards[currentFlashcardIndex];
+  const currentFlashcard = { polish, english };
 
   return (
     <View style={styles.container}>

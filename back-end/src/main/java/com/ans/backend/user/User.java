@@ -1,6 +1,8 @@
 package com.ans.backend.user;
 
 import com.ans.backend.set.FlashcardsSet;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -21,6 +23,7 @@ import java.util.List;
 @Document(collection = "users")
 public class User {
         @Id
+        @JsonSerialize(using= ToStringSerializer.class)
         private ObjectId id;
         @NotBlank()
         @Email(message = "invalid email address")

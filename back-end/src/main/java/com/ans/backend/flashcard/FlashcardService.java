@@ -1,7 +1,12 @@
 package com.ans.backend.flashcard;
 
+import com.ans.backend.set.FlashcardsSet;
+import com.mongodb.client.result.UpdateResult;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,6 +16,8 @@ import java.util.Optional;
 public class FlashcardService {
 
     private final FlashcardRepository flashcardRepository;
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     public FlashcardService(FlashcardRepository flashcardRepository) {
         this.flashcardRepository = flashcardRepository;
@@ -22,5 +29,16 @@ public class FlashcardService {
 
     public Optional<Flashcard> singleFlashcard(ObjectId id){
         return flashcardRepository.findById(id);
+    }
+
+    public Flashcard createFlashcard(String concept, String definition, String setId) {
+        Flashcard flashcard = flashcardRepository.insert(new Flashcard(concept, definition));
+
+        UpdateResult result = mongoTemplate.update(FlashcardsSet.class)
+                .matching(Criteria.where("title").is(setId))
+                .apply(new Update().push("flashcardsIds", flashcard))
+                .first();
+        System.out.println(result);
+        return flashcard;
     }
 }

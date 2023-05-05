@@ -1,10 +1,12 @@
 package com.ans.backend.user;
 
+import com.ans.backend.set.FlashcardsSet;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -21,10 +23,6 @@ public class UserController {
     public ResponseEntity<Optional<User>> getUser(@RequestBody LoginRequest loginRequest) {
 
         Optional<User> user = userService.singleUser(loginRequest.emailAddress());
-        user.ifPresentOrElse(
-                (x)-> System.out.println(x.getPassword() +" "+ loginRequest.password()),
-                ()-> System.out.println(loginRequest.emailAddress()+" ni ma")
-        );
         if (user.isPresent() && user.get().getPassword().equals(loginRequest.password())) {
             return ResponseEntity.
                     status(HttpStatus.OK)
@@ -50,6 +48,17 @@ public class UserController {
                     .body(Optional.empty());
         }
 
+    }
+
+    @GetMapping("/{userName}/sets")
+    public ResponseEntity<List<FlashcardsSet>> getSetsOfUser(@PathVariable String userName){
+        try {
+            return new ResponseEntity<>(userService.setsOfUser(userName), HttpStatus.OK);
+        }catch (RuntimeException e){
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(null);
+        }
     }
 
 }
