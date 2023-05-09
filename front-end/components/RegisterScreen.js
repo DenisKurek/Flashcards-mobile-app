@@ -1,8 +1,17 @@
 import React, { useState, useContext } from "react";
-import { View, TextInput, Button, StyleSheet } from "react-native";
+import {
+  View,
+  TextInput,
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../store/AuthenticationContext";
+import { API_URL } from "../store/Config";
 import axios from "axios";
+import { MaterialIcons } from "@expo/vector-icons";
+
 const RegisterScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -11,7 +20,7 @@ const RegisterScreen = () => {
 
   const handleRegister = async () => {
     try {
-      const response = await axios.post(state.API_URL + "/users/register", {
+      const response = await axios.post(API_URL + "/users/register", {
         emailAddress: email,
         password: password,
       });
@@ -26,24 +35,33 @@ const RegisterScreen = () => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.iconContainer}>
+        <MaterialIcons name="person-add" size={64} color="#4f4f4f" />
+      </View>
       <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="Email"
-          value={email}
-          onChangeText={(value) => setEmail(value)}
-          style={styles.input}
-        />
-        <TextInput
-          placeholder="Hasło"
-          value={password}
-          onChangeText={(value) => setPassword(value)}
-          secureTextEntry={true}
-          style={styles.input}
-        />
+        <View style={styles.inputIconContainer}>
+          <MaterialIcons name="email" size={24} color="#4f4f4f" />
+          <TextInput
+            placeholder="Email"
+            value={email}
+            onChangeText={(value) => setEmail(value)}
+            style={styles.input}
+          />
+        </View>
+        <View style={styles.inputIconContainer}>
+          <MaterialIcons name="lock" size={24} color="#4f4f4f" />
+          <TextInput
+            placeholder="Hasło"
+            value={password}
+            onChangeText={(value) => setPassword(value)}
+            secureTextEntry={true}
+            style={styles.input}
+          />
+        </View>
       </View>
-      <View style={styles.buttonContainer}>
-        <Button title="Zarejestruj" onPress={handleRegister} />
-      </View>
+      <TouchableOpacity style={styles.buttonContainer} onPress={handleRegister}>
+        <Text style={styles.buttonText}>Zarejestruj</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -53,14 +71,19 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#fff",
     paddingHorizontal: 20,
+    backgroundColor: "#F5FCFF",
+  },
+  iconContainer: {
+    marginBottom: 20,
   },
   inputContainer: {
     width: "100%",
     marginBottom: 20,
   },
-  input: {
+  inputIconContainer: {
+    flexDirection: "row",
+    alignItems: "center",
     borderWidth: 1,
     borderColor: "#ccc",
     padding: 10,
@@ -68,8 +91,24 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     width: "100%",
   },
+  input: {
+    marginLeft: 10,
+    fontSize: 16,
+    color: "#4f4f4f",
+    width: "100%",
+  },
   buttonContainer: {
-    width: 200,
+    width: "100%",
+    height: 50,
+    backgroundColor: "#4f4f4f",
+    borderRadius: 5,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });
 

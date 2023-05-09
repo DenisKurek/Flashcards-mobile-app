@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Animated,
+} from "react-native";
 import { StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_URL } from "../store/Config";
@@ -9,13 +15,11 @@ const AddFlashcardScreen = ({ navigation, route }) => {
   const { setName } = route.params;
   const [english, setEnglish] = useState("");
   const [polish, setPolish] = useState("");
+  const [buttonAnim] = useState(new Animated.Value(0));
 
   const handleSaveFlashcards = async () => {
     try {
-      await AsyncStorage.setItem(setName, JSON.stringify(flashcards));
-      navigation.navigate("FlashcardsScreen", {
-        setName: setName,
-      });
+      navigation.navigate("UserMenu");
     } catch (error) {
       console.error(error);
     }
@@ -30,7 +34,27 @@ const AddFlashcardScreen = ({ navigation, route }) => {
     console.log(response);
     setEnglish("");
     setPolish("");
+    animateButton();
   };
+
+  const animateButton = () => {
+    Animated.timing(buttonAnim, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true,
+    }).start(() => {
+      Animated.timing(buttonAnim, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: true,
+      }).start();
+    });
+  };
+
+  const buttonScale = buttonAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 1.2],
+  });
 
   return (
     <View style={styles.container}>
@@ -49,11 +73,18 @@ const AddFlashcardScreen = ({ navigation, route }) => {
           onChangeText={(text) => setPolish(text)}
         />
       </View>
-      <TouchableOpacity style={styles.addButton} onPress={handleAddFlashcard}>
-        <Text style={styles.buttonText}>Dodaj fiszkę</Text>
+      <TouchableOpacity
+        style={[styles.button, styles.addButton]}
+        onPress={handleAddFlashcard}
+      >
+        <Animated.Text
+          style={[styles.buttonText, { transform: [{ scale: buttonScale }] }]}
+        >
+          Dodaj fiszkę
+        </Animated.Text>
       </TouchableOpacity>
       <TouchableOpacity
-        style={styles.saveButton}
+        style={[styles.button, styles.saveButton]}
         onPress={handleSaveFlashcards}
       >
         <Text style={styles.buttonText}>Zapisz fiszki</Text>
@@ -65,40 +96,50 @@ const AddFlashcardScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#F5FCFF",
+    paddingHorizontal: 20,
+    paddingVertical: 40,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "space-between",
   },
   title: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
+    color: "#333",
+    textAlign: "center",
   },
   form: {
-    width: "80%",
+    width: "100%",
   },
   input: {
-    height: 40,
-    borderColor: "gray",
-    borderWidth: 1,
-    borderRadius: 5,
-    paddingLeft: 10,
-    marginBottom: 10,
+    height: 50,
+    borderWidth: 2,
+    borderRadius: 10,
+    paddingHorizontal: 20,
+    marginBottom: 20,
+    fontSize: 18,
+    borderColor: "#ccc",
   },
   addButton: {
-    backgroundColor: "blue",
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 20,
-  },
-  saveButton: {
-    backgroundColor: "green",
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 20,
+    backgroundColor: "#4caf50",
+    borderRadius: 10,
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    marginBottom: 20,
   },
   buttonText: {
-    color: "white",
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
     textAlign: "center",
+  },
+  saveButton: {
+    backgroundColor: "#2196f3",
+    borderRadius: 10,
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    marginBottom: 100,
   },
 });
 

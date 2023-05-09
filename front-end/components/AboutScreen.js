@@ -4,7 +4,7 @@ import { View, Text, StyleSheet } from "react-native";
 const AboutScreen = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>O aplikacji</Text>
+      <Text style={styles.header}>O aplikacji Fiszkomat</Text>
       <Text style={styles.text}>
         Ta aplikacja została stworzona w celach edukacyjnych i demonstracyjnych.
       </Text>
@@ -26,6 +26,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
+    backgroundColor: "#F5FCFF",
   },
   header: {
     fontSize: 24,

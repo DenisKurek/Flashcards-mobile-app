@@ -46,8 +46,34 @@ const FlashcardsScreen = ({ navigation }) => {
       <Text style={styles.setLength}>
         {item.flashcards ? item.flashcards.length : 0} fiszek
       </Text>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={[styles.editButton, styles.button]}
+          onPress={() =>
+            navigation.navigate("EditFlashcardSetScreen", { setId: item.id })
+          }
+        >
+          <Text style={styles.buttonText}>Edytuj</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.deleteButton, styles.button]}
+          onPress={() => deleteFlashcardSet(item.id)}
+        >
+          <Text style={styles.buttonText}>Usuń</Text>
+        </TouchableOpacity>
+      </View>
     </TouchableOpacity>
   );
+
+  const deleteFlashcardSet = async (setId, userEmail) => {
+    try {
+      await axios.delete(`${API_URL}/sets/${setId}?userEmail=${userEmail}`);
+      setFlashcardSets(flashcardSets.filter((set) => set.id !== setId));
+    } catch (error) {
+      console.error(error);
+      //TODO add error handling
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -55,7 +81,7 @@ const FlashcardsScreen = ({ navigation }) => {
       <FlatList
         data={flashcardSets}
         renderItem={renderFlashcardSet}
-        keyExtractor={(item) => item.setName}
+        keyExtractor={(item) => item.setId}
         style={styles.list}
       />
     </View>
@@ -68,9 +94,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 10,
+    backgroundColor: "#F5FCFF",
   },
   title: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
   },
@@ -84,12 +111,38 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   setName: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "bold",
     marginBottom: 5,
   },
   setLength: {
-    fontSize: 14,
+    fontSize: 18,
+    paddingBottom: 10,
+  },
+  buttonContainer: {
+    width: "30%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  editButton: {
+    backgroundColor: "orange",
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    marginRight: 5,
+  },
+  deleteButton: {
+    backgroundColor: "red",
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    marginLeft: 5,
+  },
+  buttonText: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 16,
   },
 });
 

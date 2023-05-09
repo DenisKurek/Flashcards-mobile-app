@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 const SummaryScreen = ({ navigation, route }) => {
   const total = route.params?.total || 0;
@@ -13,8 +14,16 @@ const SummaryScreen = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Podsumowanie</Text>
+      <View style={styles.percentContainer}>
+        <Ionicons
+          name="md-checkmark-circle-outline"
+          size={80}
+          color="#7ED321"
+        />
+        <Text style={styles.percentText}>{percent}%</Text>
+      </View>
       <Text style={styles.text}>
-        Znasz odpowiedź na {correct} z {total} fiszek ({percent}%)
+        Znasz odpowiedź na {correct} z {total} fiszek
       </Text>
       <TouchableOpacity style={styles.button} onPress={handlePress}>
         <Text style={styles.buttonText}>Powrót do menu użytkownika</Text>
@@ -28,27 +37,41 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#fff",
+    paddingHorizontal: 30,
+    backgroundColor: "#F5FCFF",
   },
   title: {
-    fontSize: 32,
+    fontSize: 36,
     fontWeight: "bold",
     marginVertical: 20,
   },
+  percentContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 40,
+  },
+  percentText: {
+    fontSize: 64,
+    fontWeight: "bold",
+    marginLeft: 20,
+  },
   text: {
     fontSize: 24,
-    marginVertical: 10,
+    marginBottom: 50,
+    textAlign: "center",
+    fontFamily: "sans-serif",
   },
   button: {
-    backgroundColor: "#007aff",
-    padding: 10,
+    backgroundColor: "#48C774",
+    paddingVertical: 20,
+    paddingHorizontal: 30,
     borderRadius: 5,
-    marginTop: 20,
   },
   buttonText: {
     color: "#fff",
     fontSize: 20,
     fontWeight: "bold",
+    fontFamily: "sans-serif",
   },
 });
 

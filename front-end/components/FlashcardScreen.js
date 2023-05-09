@@ -5,6 +5,7 @@ import { StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import { API_URL } from "../store/Config";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 const FlashcardScreen = ({ route }) => {
   const { setName, setId } = route.params;
@@ -89,6 +90,11 @@ const FlashcardScreen = ({ route }) => {
         {currentFlashcardIndex + 1}/{flashcards.length}
       </Text>
       <TouchableOpacity style={styles.flashcard} onPress={handleFlipCard}>
+        <Ionicons
+          name={isFlipped ? "arrow-redo-outline" : "arrow-undo-outline"}
+          size={24}
+          color="white"
+        />
         <Text style={styles.title}>
           {isFlipped ? currentFlashcard.polish : currentFlashcard.english}
         </Text>
@@ -98,12 +104,14 @@ const FlashcardScreen = ({ route }) => {
           style={[styles.button, styles.success]}
           onPress={handleCorrectAnswer}
         >
+          <Ionicons name="thumbs-up-outline" size={24} color="white" />
           <Text style={styles.buttonText}>Umiem</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.button, styles.danger]}
           onPress={handleIncorrectAnswer}
         >
+          <Ionicons name="thumbs-down-outline" size={24} color="white" />
           <Text style={styles.buttonText}>Nie umiem</Text>
         </TouchableOpacity>
       </View>
@@ -117,9 +125,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 10,
+    backgroundColor: "#F5FCFF",
   },
   title: {
-    fontSize: 20,
+    fontSize: 30,
     fontWeight: "bold",
     marginBottom: 20,
   },
@@ -155,12 +164,12 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "white",
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "bold",
   },
   counter: {
-    fontSize: 16,
-    marginBottom: 10,
+    fontSize: 24,
+    marginBottom: 50,
   },
 });
 
