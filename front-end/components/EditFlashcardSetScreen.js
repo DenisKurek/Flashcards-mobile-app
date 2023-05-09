@@ -13,6 +13,7 @@ import axios from "axios";
 const EditFlashcardSetScreen = ({ route }) => {
   const [flashcards, setFlashcards] = useState([]);
   const [newFlashcard, setNewFlashcard] = useState("");
+  const [editedFlashcard, setEditedFlashcard] = useState("");
   const { setId } = route.params;
 
   useEffect(() => {
@@ -20,7 +21,6 @@ const EditFlashcardSetScreen = ({ route }) => {
       try {
         const response = await axios.get(`${API_URL}/sets/${setId}`);
         const data = response.data;
-        console.log(data.flashcardsIds);
         setFlashcards(data.flashcardsIds);
       } catch (error) {
         console.error(error);
@@ -30,9 +30,37 @@ const EditFlashcardSetScreen = ({ route }) => {
     fetchFlashcards();
   }, [setId]);
 
+  useEffect(() => {
+    if (editedFlashcard == "") {
+      return;
+    }
+    const chandleFlashcardChange = async () => {
+      try {
+        const response = await axios.put(
+          `${API_URL}/flashcards/${editedFlashcard.id}`,
+          {
+            concept: editedFlashcard.concept,
+            definition: editedFlashcard.definition,
+          }
+        );
+        const data = response.data;
+      } catch (error) {
+        console.error(error);
+        //TODO add error handling
+      }
+    };
+    const changeTimeout = setTimeout(() => {
+      chandleFlashcardChange();
+    }, 1000);
+
+    return () => {
+      clearTimeout(changeTimeout);
+    };
+  }, [editedFlashcard]);
+
   const handleDeleteFlashcard = async (flashcardId) => {
     try {
-      await axios.delete(`${API_URL}/sets/${setId}/flashcards/${flashcardId}`);
+      await axios.delete(`${API_URL}/flashcards/${flashcardId}`);
       setFlashcards(
         flashcards.filter((flashcard) => flashcard.id !== flashcardId)
       );
@@ -44,10 +72,10 @@ const EditFlashcardSetScreen = ({ route }) => {
 
   const handleAddFlashcard = async () => {
     try {
-      const response = await axios.post(`${API_URL}/flashcards`, {
+      const response = await axios.post(`${API_URL}/flashcards/add`, {
         setId,
-        front: newFlashcard.front,
-        back: newFlashcard.back,
+        concept: newFlashcard.front,
+        definition: newFlashcard.back,
       });
       setFlashcards([...flashcards, response.data]);
       setNewFlashcard("");
@@ -58,13 +86,35 @@ const EditFlashcardSetScreen = ({ route }) => {
   };
 
   const renderFlashcard = ({ item }) => (
-    <TouchableOpacity
-      style={styles.flashcard}
-      onPress={() => handleDeleteFlashcard(item.id)}
-    >
-      <Text style={styles.flashcardText}>
-        {item.concept} - {item.definition}
-      </Text>
+    <TouchableOpacity style={styles.flashcard}>
+      <View style={styles.flashcardText}>
+        <TextInput
+          style={styles.input}
+          defaultValue={item.concept}
+          onChangeText={(concept) =>
+            setEditedFlashcard({
+              ...item,
+              concept: concept,
+            })
+          }
+        />
+        <TextInput
+          style={styles.input}
+          defaultValue={item.definition}
+          onChangeText={(definition) =>
+            setEditedFlashcard({
+              ...item,
+              definition: definition,
+            })
+          }
+        />
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => handleDeleteFlashcard(item.id)}
+        >
+          <Text style={styles.buttonText}>Usuń</Text>
+        </TouchableOpacity>
+      </View>
     </TouchableOpacity>
   );
 
@@ -130,6 +180,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   flashcardText: {
+    flexDirection: "row",
+    alignItems: "center",
     fontSize: 18,
   },
   addFlashcard: {

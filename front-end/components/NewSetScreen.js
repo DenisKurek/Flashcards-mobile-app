@@ -31,7 +31,11 @@ function NewSetScreen({ navigation }) {
       user: ctx.state.user.emailAddress,
     });
 
-    navigation.navigate("AddFlashcardScreen", { setName });
+    const data = response.data;
+    navigation.navigate("AddFlashcardScreen", {
+      setId: data.id,
+      setName: data.title,
+    });
   };
 
   return (

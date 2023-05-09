@@ -12,7 +12,7 @@ import { API_URL } from "../store/Config";
 import axios from "axios";
 
 const AddFlashcardScreen = ({ navigation, route }) => {
-  const { setName } = route.params;
+  const { setId, setName } = route.params;
   const [english, setEnglish] = useState("");
   const [polish, setPolish] = useState("");
   const [buttonAnim] = useState(new Animated.Value(0));
@@ -29,7 +29,7 @@ const AddFlashcardScreen = ({ navigation, route }) => {
     const response = await axios.post(API_URL + "/flashcards/add", {
       concept: english,
       definition: polish,
-      set: setName,
+      setId: setId,
     });
     console.log(response);
     setEnglish("");

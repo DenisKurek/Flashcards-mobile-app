@@ -57,7 +57,9 @@ const FlashcardsScreen = ({ navigation }) => {
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.deleteButton, styles.button]}
-          onPress={() => deleteFlashcardSet(item.id)}
+          onPress={() =>
+            deleteFlashcardSet(item.id, ctx.state.user.emailAddress)
+          }
         >
           <Text style={styles.buttonText}>Usuń</Text>
         </TouchableOpacity>
