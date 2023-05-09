@@ -51,12 +51,10 @@ public class FlashcardsSetService {
 
     public void deleteSet(ObjectId id, String userEmail) {
         flashcardsSetRepository.deleteById(id);
-
         UpdateResult result = mongoTemplate.update(User.class)
                 .matching(Criteria.where("emailAddress").is(userEmail))
                 .apply(new Update().pull("setsIds", id))
                 .first();
+        System.out.println(result);
     }
-
-
 }

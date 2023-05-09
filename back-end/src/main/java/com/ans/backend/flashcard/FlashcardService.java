@@ -31,14 +31,32 @@ public class FlashcardService {
         return flashcardRepository.findById(id);
     }
 
-    public Flashcard createFlashcard(String concept, String definition, String setId) {
+    public Flashcard createFlashcard(String concept, String definition, ObjectId setId) {
         Flashcard flashcard = flashcardRepository.insert(new Flashcard(concept, definition));
 
         UpdateResult result = mongoTemplate.update(FlashcardsSet.class)
-                .matching(Criteria.where("title").is(setId))
+                .matching(Criteria.where("_id").is(setId))
                 .apply(new Update().push("flashcardsIds", flashcard))
                 .first();
         System.out.println(result);
         return flashcard;
+    }
+
+    public Flashcard editFlashcard(ObjectId id, String concept, String definition) {
+        Flashcard flashcard = flashcardRepository.findById(id).orElseThrow(RuntimeException::new);
+        flashcard.setConcept(concept);
+        flashcard.setDefinition(definition);
+        flashcardRepository.save(flashcard);
+        return  flashcard;
+    }
+
+
+    public void deleteFlashcard(ObjectId id) {
+        flashcardRepository.deleteById(id);
+        UpdateResult result = mongoTemplate.update(FlashcardsSet.class)
+                .matching(Criteria.where("flashcardsIds").in(id))
+                .apply(new Update().pull("flashcardsIds", id))
+                .first();
+        System.out.println(result);
     }
 }

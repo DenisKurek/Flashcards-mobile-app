@@ -28,7 +28,23 @@ public class FlashcardController {
 
     @PostMapping("/add")
     public ResponseEntity<Flashcard> createFlashcard(@RequestBody CreateFlashcardRequest request) {
-        return new ResponseEntity<>(flashcardService.createFlashcard(request.concept(),request.definition(), request.set()),HttpStatus.CREATED);
+        return new ResponseEntity<>(flashcardService.createFlashcard(request.concept(),request.definition(), request.setId()),HttpStatus.CREATED);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Flashcard> editFlashcard(@PathVariable ObjectId id, @RequestBody EditFlashcardRequest request) {
+        try {
+            return new ResponseEntity<>(flashcardService.editFlashcard(id, request.concept(), request.definition()), HttpStatus.OK);
+        }catch (RuntimeException e){
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(null);
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteFlashcard(@PathVariable("id") ObjectId id) {
+        flashcardService.deleteFlashcard(id);
+        return ResponseEntity.noContent().build();
+    }
 }

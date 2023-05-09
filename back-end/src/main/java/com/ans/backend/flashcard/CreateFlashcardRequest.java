@@ -1,4 +1,6 @@
 package com.ans.backend.flashcard;
 
-public record CreateFlashcardRequest(String concept,String definition,String set) {
+import org.bson.types.ObjectId;
+
+public record CreateFlashcardRequest(String concept, String definition, ObjectId setId) {
 }
