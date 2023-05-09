@@ -43,4 +43,12 @@ public class FlashcardsSetController {
     public ResponseEntity<FlashcardsSet> createSet(@RequestBody CreateSetRequest request) {
         return new ResponseEntity<>(flashcardsSetService.createSet(request.title(),request.user()),HttpStatus.CREATED);
     }
+
+    @DeleteMapping("/{setId}")
+    public ResponseEntity<Void> deleteSet(@PathVariable("setId") ObjectId setId, @RequestParam("userEmail") String userEmail) {
+        flashcardsSetService.deleteSet(setId, userEmail);
+        return ResponseEntity.noContent().build();
+    }
+
+
 }
