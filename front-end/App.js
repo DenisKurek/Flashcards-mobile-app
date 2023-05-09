@@ -12,6 +12,7 @@ import SummaryScreen from "./components/SummaryScreen";
 import AddFlashcardScreen from "./components/AddFlashcardScreen";
 import NewSetScreen from "./components/NewSetScreen";
 import AboutScreen from "./components/AboutScreen";
+import EditFlashcardSetScreen from "./components/EditFlashcardSetScreen";
 import { AuthContextProvider } from "./store/AuthenticationContext.js";
 
 const Stack = createStackNavigator();
@@ -34,6 +35,10 @@ function App() {
           />
           <Stack.Screen name="NewSetScreen" component={NewSetScreen} />
           <Stack.Screen name="AboutScreen" component={AboutScreen} />
+          <Stack.Screen
+            name="EditFlashcardSetScreen"
+            component={EditFlashcardSetScreen}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </AuthContextProvider>
