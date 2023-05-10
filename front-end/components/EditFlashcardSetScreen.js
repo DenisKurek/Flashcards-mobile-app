@@ -109,7 +109,7 @@ const EditFlashcardSetScreen = ({ route }) => {
           }
         />
         <TouchableOpacity
-          style={styles.addButton}
+          style={styles.deleteButton}
           onPress={() => handleDeleteFlashcard(item.id)}
         >
           <Text style={styles.buttonText}>Usuń</Text>
@@ -188,17 +188,18 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   addFlashcardText: {
-    fontSize: 20,
+    fontSize: 24,
     marginBottom: 10,
   },
   addFlashcardInputs: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 10,
+    marginBottom: 30,
   },
   input: {
     flex: 1,
+    fontSize: 20,
     backgroundColor: "#eee",
     borderRadius: 5,
     paddingHorizontal: 10,
@@ -206,7 +207,13 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   addButton: {
-    backgroundColor: "#4CAF50",
+    backgroundColor: "#00e277",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+  deleteButton: {
+    backgroundColor: "#cc0000",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,

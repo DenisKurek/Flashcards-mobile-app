@@ -1,7 +1,12 @@
 import React, { useEffect, useState, useContext } from "react";
-import { View, Text, FlatList, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 import { AuthContext } from "../store/AuthenticationContext";
-import { StyleSheet } from "react-native";
 import { API_URL } from "../store/Config";
 import axios from "axios";
 
@@ -42,27 +47,31 @@ const FlashcardsScreen = ({ navigation }) => {
         })
       }
     >
-      <Text style={styles.setName}>{item.name}</Text>
-      <Text style={styles.setLength}>
-        {item.flashcards ? item.flashcards.length : 0} fiszek
-      </Text>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={[styles.editButton, styles.button]}
-          onPress={() =>
-            navigation.navigate("EditFlashcardSetScreen", { setId: item.id })
-          }
-        >
-          <Text style={styles.buttonText}>Edytuj</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.deleteButton, styles.button]}
-          onPress={() =>
-            deleteFlashcardSet(item.id, ctx.state.user.emailAddress)
-          }
-        >
-          <Text style={styles.buttonText}>Usuń</Text>
-        </TouchableOpacity>
+      <View style={styles.flashcardSetRow}>
+        <View style={styles.setNameContainer}>
+          <Text style={styles.setName}>{item.name}</Text>
+          <Text style={styles.setLength}>
+            {item.flashcards ? item.flashcards.length : 0} fiszek
+          </Text>
+        </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={[styles.editButton, styles.button]}
+            onPress={() =>
+              navigation.navigate("EditFlashcardSetScreen", { setId: item.id })
+            }
+          >
+            <Text style={styles.buttonText}>Edytuj</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.deleteButton, styles.button]}
+            onPress={() =>
+              deleteFlashcardSet(item.id, ctx.state.user.emailAddress)
+            }
+          >
+            <Text style={styles.buttonText}>Usuń</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </TouchableOpacity>
   );
@@ -93,58 +102,65 @@ const FlashcardsScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#fff",
     alignItems: "center",
-    justifyContent: "center",
-    padding: 10,
-    backgroundColor: "#F5FCFF",
+    justifyContent: "flex-start",
+    padding: 20,
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
   },
-  list: {
+  flashcardSet: {
+    backgroundColor: "#f2f2f2",
+    borderRadius: 5,
+    marginBottom: 10,
+    padding: 20,
     width: "100%",
   },
-  flashcardSet: {
-    backgroundColor: "lightgray",
-    padding: 10,
-    marginBottom: 10,
-    borderRadius: 5,
+  flashcardSetRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  setNameContainer: {
+    flex: 3,
   },
   setName: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: "bold",
     marginBottom: 5,
   },
   setLength: {
     fontSize: 18,
-    paddingBottom: 10,
+    color: "#666",
   },
   buttonContainer: {
-    width: "30%",
+    flex: 2,
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
     alignItems: "center",
   },
-  editButton: {
-    backgroundColor: "orange",
-    paddingVertical: 5,
-    paddingHorizontal: 10,
+  button: {
     borderRadius: 5,
-    marginRight: 5,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    marginLeft: 10,
+  },
+  editButton: {
+    backgroundColor: "#0066cc",
   },
   deleteButton: {
-    backgroundColor: "red",
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    borderRadius: 5,
-    marginLeft: 5,
+    backgroundColor: "#cc0000",
   },
   buttonText: {
-    color: "white",
+    color: "#fff",
     fontWeight: "bold",
-    fontSize: 16,
+    fontSize: 18,
+  },
+  list: {
+    width: "100%",
   },
 });
 
